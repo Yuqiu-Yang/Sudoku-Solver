@@ -1,16 +1,19 @@
 def row_check(objGrid, row, entry):
+    #returns true if the row is safe
     for i in range(9):
         if(objGrid[row][i].entry == entry):
             return False
     return True
         
 def col_check(objGrid, col, entry):
+    #returns true if the column is safe
     for i in range(9):
         if(objGrid[i][col].entry == entry):
             return False
     return True
 
 def block_check(objGrid, row, col, entry):
+    #returns true if the block is safe
     for i in range(row - row%3 , row + 3 - row%3):
         for j in range(col - col%3 , col + 3 - col%3):
             if(objGrid[i][j].entry == entry):
@@ -18,6 +21,7 @@ def block_check(objGrid, row, col, entry):
     return True
 
 def safety_check(objGrid, row, col, entry):
+    #returns true if adding the entry is safe
     return (row_check(objGrid, row, entry)) & (col_check(objGrid, col, entry)) & (block_check(objGrid, row, col, entry))
 
 

@@ -1,38 +1,21 @@
 import sys
-from Sudoku_Entity import SudokuEntity
 def output(a):
     sys.stdout.write(str(a))
 def print_puzzle(puzzle):
-    if(isinstance(puzzle[0][0], SudokuEntity)):
-        for i in range(9):
-            for j in range(9):
-                cell = puzzle[i][j].entry
-                if cell == 0:
-                    output('.')
-                else:
-                    output(cell)
-                if (j + 1) % 3 == 0 and j < 8:
-                    output(' |')
-                if j != 8:
-                    output(' ')
-            output('\n')
-            if (i + 1) % 3 == 0 and i < 8:
-                output("- - - + - - - + - - -\n")
-    else:
-        for i in range(9):
-            for j in range(9):
-                cell = puzzle[i][j]
-                if cell == 0:
-                    output('.')
-                else:
-                    output(cell)
-                if (j + 1) % 3 == 0 and j < 8:
-                    output(' |')
-                if j != 8:
-                    output(' ')
-            output('\n')
-            if (i + 1) % 3 == 0 and i < 8:
-                output("- - - + - - - + - - -\n")
+    for i in range(9):
+        for j in range(9):
+            cell = puzzle[i][j]
+            if cell == 0:
+                output('.')
+            else:
+                output(cell)
+            if (j + 1) % 3 == 0 and j < 8:
+                output(' |')
+            if j != 8:
+                output(' ')
+        output('\n')
+        if (i + 1) % 3 == 0 and i < 8:
+            output("- - - + - - - + - - -\n")
             
                        
 def uniqueEle(testList):

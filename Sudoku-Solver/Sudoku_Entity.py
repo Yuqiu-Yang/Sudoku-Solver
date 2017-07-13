@@ -1,4 +1,5 @@
 import itertools
+import sys
 from copy import deepcopy
 # Define the basic Sudoku Entity Class
 class SudokuEntity(object):
@@ -29,6 +30,23 @@ class SudokuPuzzle(object):
             for j in range(9):
                 self.grid[i][j].updateEntry(puzzle[i][j])
                 self.grid[i][j].updatePosBlock(i,j)
+    def output(self, a):
+        sys.stdout.write(str(a))
+    def printSelf(self,attribute = "entry"):
+        for i in range(9):
+            for j in range(9):
+                cell = getattr(self.grid[i][j],attribute)
+                if cell == 0:
+                    self.output('.')
+                else:
+                    self.output(cell)
+                if (j + 1) % 3 == 0 and j < 8:
+                    self.output(' |')
+                if j != 8:
+                    self.output(' ')
+            self.output('\n')
+            if (i + 1) % 3 == 0 and i < 8:
+                self.output("- - - + - - - + - - -\n")
     
 
 

@@ -1,4 +1,5 @@
 import itertools
+from copy import deepcopy
 # Define the basic Sudoku Entity Class
 class SudokuEntity(object):
     def __init__(self):
@@ -14,7 +15,7 @@ class SudokuEntity(object):
 # Define Basic Puzzle Class    
 class SudokuPuzzle(object):
     def __init__(self,SukokuEntityType):
-        self.grid = [[SukokuEntityType for i in range(9)] for j in range(9)]
+        self.grid = [[deepcopy(SukokuEntityType) for i in range(9)] for j in range(9)]
         self.subGrid = []
         # Arranged by row
         for i in range(3):
@@ -29,5 +30,5 @@ class SudokuPuzzle(object):
                 self.grid[i][j].updateEntry(puzzle[i][j])
                 self.grid[i][j].updatePosBlock(i,j)
     
-    
-    
+
+

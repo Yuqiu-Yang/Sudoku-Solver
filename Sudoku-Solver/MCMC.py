@@ -1,6 +1,7 @@
 import math
 import random
 import numpy
+from copy import deepcopy
 from Sudoku_Entity import SudokuEntity
 from Sudoku_Entity import SudokuPuzzle
 
@@ -95,7 +96,7 @@ def Solver_MCMC(puzzle,t):
     
     while objGrid.totCost != 0:
         for i in range(9):
-            if(objGrid.blockFixed):
+            if(objGrid.blockFixed[i]):
                 continue
             
             sample1, sample2 = objGrid.randomSelect(i)
@@ -105,7 +106,7 @@ def Solver_MCMC(puzzle,t):
             objGrid.updateRowCost(sample2[0])
             objGrid.updateColCost(sample1[1])
             objGrid.updateColCost(sample2[1])
-            tempTotCost = objGrid.totCost
+            tempTotCost = deepcopy(objGrid.totCost)
             objGrid.updateTotCost()
             if(tempTotCost < objGrid.totCost):
                 #if the result is worse
@@ -116,11 +117,11 @@ def Solver_MCMC(puzzle,t):
                     objGrid.updateRowCost(sample1[0])
                     objGrid.updateRowCost(sample2[0])
                     objGrid.updateColCost(sample1[1])
-                    objGrid.updateColCost(sample2[2])
+                    objGrid.updateColCost(sample2[1])
                     objGrid.updateTotCost()
-            objGrid.printSelf()
-            print("the block num is %d" % i)
-      
+        t *= 0.999
+    objGrid.printSelf("trialEntry")
+    
     for i in range(9):
         for j in range(9):
             objGrid.grid[i][j].becomeReal()

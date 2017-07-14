@@ -1,5 +1,6 @@
-from Backtracking import objGridMaker
 from Backtracking import Solver_Backtracking
+from Sudoku_Entity import SudokuEntity
+from Sudoku_Entity import SudokuPuzzle
 from misc import print_puzzle
 puzzle=  [[3,2,0,4,6,0,5,0,0],
           [0,0,5,0,0,0,0,3,6],
@@ -12,17 +13,12 @@ puzzle=  [[3,2,0,4,6,0,5,0,0],
           [8,9,0,7,0,0,1,2,3]]
 
 
-
-objectGrid = objGridMaker(puzzle)
+objectGrid = SudokuPuzzle(SudokuEntity())
+objectGrid.initGrid(puzzle)
 
 print_puzzle(puzzle) 
-Solver_Backtracking(objectGrid)
-
-for i in range(9):
-    for j in range(9):
-        puzzle[i][j] = objectGrid[i][j].entry
-        
-print_puzzle(objectGrid)
+Solver_Backtracking(objectGrid.grid)
+objectGrid.printSelf()
 
 
 

@@ -1,12 +1,3 @@
-from Sudoku_Entity import SudokuEntity
-def objGridMaker(puzzle):
-    objectGrid = [[SudokuEntity() for i in range(9)] for j in range(9)]
-    for i in range(9):
-        for j in range(9):
-            objectGrid[i][j].updateEntry(puzzle[i][j])
-            objectGrid[i][j].updatePosBlock(i,j)
-    return objectGrid
-
 def row_check(objGrid, row, entry):
     #returns true if the row is safe
     for i in range(9):

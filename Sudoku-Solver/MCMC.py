@@ -1,5 +1,6 @@
 import math
 import random
+import numpy
 from Sudoku_Entity import SudokuEntity
 from Sudoku_Entity import SudokuPuzzle
 
@@ -17,7 +18,7 @@ class TSudokuEntity(SudokuEntity):
     def becomeReal(self):
         self.updateEntry(self.trialEntry)
         self.fixed = True
-        
+      
 class TSudokuPuzzle(SudokuPuzzle):
     def __init__(self):
         SudokuPuzzle.__init__(self,TSudokuEntity())
@@ -43,6 +44,10 @@ class TSudokuPuzzle(SudokuPuzzle):
                 tempGrid = self.grid[tempPos[0]][tempPos[1]]
                 if(not tempGrid.fixed):
                     tempGrid.updateTrial(temp.pop())
+        # Add unique block check 
+        
+        
+        
     def updateRowCost(self,rowNum):
         temp = set(range(1, 10))
         for i in range(9):
@@ -59,15 +64,67 @@ class TSudokuPuzzle(SudokuPuzzle):
         temp = set(range(9))
         for i in range(9):
             tempPos = self.subGrid[blockNum][i]
-            if(self.gird[tempPos[0]][tempPos[1]].fixed):
+            if(self.grid[tempPos[0]][tempPos[1]].fixed):
                 temp.discard(i)
         sampleInd = random.sample(temp, 2)
         return self.subGrid[blockNum][sampleInd[0]], self.subGrid[blockNum][sampleInd[1]]
     def swap(self, sample1, sample2):
+        self.grid[sample1[0]][sample1[1]].updatePosBlock(sample2[0],sample2[1])
+        self.grid[sample2[0]][sample2[1]].updatePosBlock(sample1[0],sample1[1])
         self.grid[sample1[0]][sample1[1]].trialEntry, self.grid[sample2[0]][sample2[1]].trialEntry=self.grid[sample2[0]][sample2[1]].trialEntry, self.grid[sample1[0]][sample1[1]].trialEntry 
+        
     
 
-
+def Solver_MCMC(puzzle,t):
+    # Initialize the puzzle grid
+    objGrid = TSudokuPuzzle()
+    objGrid.initGrid(puzzle)
+    objGrid.initSolve()
+    for i in range(9):
+        objGrid.updateRowCost(i)
+        objGrid.updateColCost(i)
+    objGrid.updateTotCost()
+    objGrid.printSelf()
+    
+    while objGrid.totCost != 0:
+        for i in range(9):
+            sample1, sample2 = objGrid.randomSelect(i)
+            objGrid.swap(sample1,sample2)
+  
+            objGrid.updateRowCost(sample1[0])
+            objGrid.updateRowCost(sample2[0])
+            objGrid.updateColCost(sample1[1])
+            objGrid.updateColCost(sample2[1])
+            tempTotCost = objGrid.totCost
+            objGrid.updateTotCost()
+            if(tempTotCost < objGrid.totCost):
+                #if the result is worse
+                temp = numpy.random.uniform()
+                if(temp >= math.exp(-abs(tempTotCost - objGrid.totCost)/t)):
+                    # if does not accept
+                    objGrid.swap(sample1,sample2)
+                    objGrid.updateRowCost(sample1[0])
+                    objGrid.updateRowCost(sample2[0])
+                    objGrid.updateColCost(sample1[1])
+                    objGrid.updateColCost(sample2[2])
+                    objGrid.updateTotCost()
+            objGrid.printSelf()
+            
+            
+            
+            
+            
+            
+            
+    for i in range(9):
+        for j in range(9):
+            objGrid.grid[i][j].becomeReal()
+    
+    objGrid.printSelf()
+    
+            
+    
+            
 
         
         

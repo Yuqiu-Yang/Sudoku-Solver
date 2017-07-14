@@ -25,6 +25,7 @@ class TSudokuPuzzle(SudokuPuzzle):
         self.rowCost = [math.inf for i in range(9)]
         self.colCost = [math.inf for i in range(9)]
         self.totCost = math.inf
+        self.blockFixed = [False for i in range(9)]
     def initGrid(self, puzzle):
         for i in range(9):
             for j in range(9):
@@ -34,20 +35,26 @@ class TSudokuPuzzle(SudokuPuzzle):
     def initSolve(self):
         for i in range(9):
             temp = set(range(1, 10))
+            tempNFixed = []
             for j in range(9):
                 tempPos = self.subGrid[i][j]
-                tempGrid = self.grid[tempPos[0]][tempPos[1]]
-                if(tempGrid.fixed):
-                    temp.discard(tempGrid.entry)
-            for j in range(9):
-                tempPos = self.subGrid[i][j]
-                tempGrid = self.grid[tempPos[0]][tempPos[1]]
-                if(not tempGrid.fixed):
-                    tempGrid.updateTrial(temp.pop())
-        # Add unique block check 
-        
-        
-        
+                if(self.grid[tempPos[0]][tempPos[1]].fixed):
+                    temp.discard(self.grid[tempPos[0]][tempPos[1]].entry)
+                else:
+                    tempNFixed.append(j)
+            if(len(tempNFixed) == 1):
+                tempPos = self.subGrid[i][tempNFixed[0]]
+                self.grid[tempPos[0]][tempPos[1]].updateTrial(temp.pop())
+                self.grid[tempPos[0]][tempPos[1]].becomeReal()
+                self.blockFixed[i] = True
+            elif(len(tempNFixed) > 1):
+                for j in tempNFixed:
+                    tempPos = self.subGrid[i][j]
+                    tempGrid = self.grid[tempPos[0]][tempPos[1]]
+                    if(not tempGrid.fixed):
+                        tempGrid.updateTrial(temp.pop())
+            else:
+                self.blockFixed[i] = True
     def updateRowCost(self,rowNum):
         temp = set(range(1, 10))
         for i in range(9):
@@ -88,6 +95,9 @@ def Solver_MCMC(puzzle,t):
     
     while objGrid.totCost != 0:
         for i in range(9):
+            if(objGrid.blockFixed):
+                continue
+            
             sample1, sample2 = objGrid.randomSelect(i)
             objGrid.swap(sample1,sample2)
   
@@ -109,13 +119,8 @@ def Solver_MCMC(puzzle,t):
                     objGrid.updateColCost(sample2[2])
                     objGrid.updateTotCost()
             objGrid.printSelf()
-            
-            
-            
-            
-            
-            
-            
+            print("the block num is %d" % i)
+      
     for i in range(9):
         for j in range(9):
             objGrid.grid[i][j].becomeReal()

@@ -1,30 +1,4 @@
-from Sudoku_Entity import SudokuEntity
 from misc import uniqueEle
-
-class EnSudokuEntity(SudokuEntity):
-    def __init__(self):
-        SudokuEntity.__init__(self)
-        self.candidate = set(range(1,10))
-    def trivalCandidate(self):
-        if(self.entry != 0):
-            self.candidate = set()
-    def canToEntry(self):
-        if(len(self.candidate) == 1):
-            self.updateEntry(self.candidate.pop())
-    def eliminateCandidate(self, values):
-        self.candidate -= values
-        
-
-def moObjGridMaker(puzzle):
-    objectGrid = [[EnSudokuEntity() for i in range(9)] for j in range(9)]
-    for i in range(9):
-        for j in range(9):
-            objectGrid[i][j].updateEntry(puzzle[i][j])
-            objectGrid[i][j].updatePosBlock(i,j)
-            objectGrid[i][j].trivalCandidate()
-    return objectGrid
-
-
 def forwardChecking(objGrid):
     hasNewInfo = False
     # Check Rows

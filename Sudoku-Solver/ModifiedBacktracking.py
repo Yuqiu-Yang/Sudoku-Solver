@@ -16,7 +16,7 @@ def forwardChecking(objGrid):
             objGrid[i][j].canToEntry()
             if((len(objGrid[i][j].candidate) == 0)& (objGrid[i][j].entry == 0)):
                 return objGrid, False, hasNewInfo
-                
+
     # Check Columns
     for j in range(9):
         colValues = set()
@@ -60,7 +60,7 @@ def uniqueCheck(objGrid):
         objGrid, solvable, hasNewInfo = forwardChecking(objGrid)
         if not solvable:
             return objGrid, solvable, hasNewEntry
-        
+
     # Check Unique Candidates
     # Row Unique Check
     for i in range(9):
@@ -118,7 +118,7 @@ def lookAhead(objGrid):
         objGrid, solvable, hasNewEntry = uniqueCheck(objGrid)
         if not solvable:
             return objGrid, solvable
-        
+
 
 def find_next_empty(objGrid):
     for i in range(9):
@@ -127,25 +127,20 @@ def find_next_empty(objGrid):
                 return objGrid[i][j].pos
     return [-1,-1]
 
-       
-def Solver_ModifedBacktracking(objGrid):
+
+def Solver_ModifiedBacktracking(objGrid):
     objGrid, solvable = lookAhead(objGrid)
     if not solvable:
         return False
-    
+
     position = find_next_empty(objGrid)
     if(position[0] == -1):
         return True
-    
+
     for entry in objGrid[position[0]][position[1]].candidate:
         objGrid[position[0]][position[1]].updateEntry(entry)
-        if(Solver_ModifedBacktracking(objGrid)):
+        if(Solver_ModifiedBacktracking(objGrid)):
             return True
         objGrid[position[0]][position[1]].candidate.eliminateCandidate(set([entry]))
         objGrid[position[0]][position[1]].updateEntry(0)
     return False
-    
-    
-    
-    
-

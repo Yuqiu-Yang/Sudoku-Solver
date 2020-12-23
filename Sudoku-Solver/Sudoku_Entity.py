@@ -15,8 +15,8 @@ class SudokuEntity(object):
     def updatePosBlock(self, row, col):
         self.pos = [row, col]
         self.block = ((row // 3) + 1) + 3 * (col // 3)
-  
-# Define Basic Puzzle Class    
+
+# Define Basic Puzzle Class
 class SudokuPuzzle(object):
     def __init__(self,SukokuEntityType):
         self.grid = [[deepcopy(SukokuEntityType) for i in range(9)] for j in range(9)]
@@ -27,7 +27,7 @@ class SudokuPuzzle(object):
                 temp = list(itertools.product(range(3*i, 3*i +3), range(3*j, 3*j +3)))
                 self.subGrid.append(temp)
         del temp
-    
+
     def initGrid(self, puzzle):
         for i in range(9):
             for j in range(9):
@@ -50,11 +50,16 @@ class SudokuPuzzle(object):
             self.output('\n')
             if (i + 1) % 3 == 0 and i < 8:
                 self.output("- - - + - - - + - - -\n")
-    
+    def gridToList(self):
+        grid  = [[0 for i in range(9)] for j in range(9)]
+        for i in range(9):
+            for j in range(9):
+                grid[i][j] = self.grid[i][j].entry
+        return grid
 # Modified Sudoku class
 class EnSudokuEntity(SudokuEntity):
     def __init__(self):
-        SudokuEntity.__init__(self)
+        super().__init__()
         self.candidate = set(range(1,10))
     def trivalCandidate(self):
         if(self.entry != 0):
@@ -66,8 +71,8 @@ class EnSudokuEntity(SudokuEntity):
         self.candidate -= values
 
 class EnSudokuPuzzle(SudokuPuzzle):
-    def __init__(self):
-        SudokuPuzzle.__init__(self, EnSudokuEntity())
+    def __init__(self,SukokuEntityType):
+        super().__init__(SukokuEntityType)
     def initGrid(self, puzzle):
         for i in range(9):
             for j in range(9):
@@ -79,7 +84,7 @@ class EnSudokuPuzzle(SudokuPuzzle):
 # MCMC Sudoku Class
 class TSudokuEntity(SudokuEntity):
     def __init__(self):
-        SudokuEntity.__init__(self)
+        super().__init__()
         self.trialEntry = 0
         self.fixed = False
     def updateFixed(self):
@@ -91,10 +96,10 @@ class TSudokuEntity(SudokuEntity):
     def becomeReal(self):
         self.updateEntry(self.trialEntry)
         self.fixed = True
-      
+
 class TSudokuPuzzle(SudokuPuzzle):
     def __init__(self):
-        SudokuPuzzle.__init__(self,TSudokuEntity())
+        super().__init__(TSudokuEntity())
         self.rowCost = [math.inf for i in range(9)]
         self.colCost = [math.inf for i in range(9)]
         self.totCost = math.inf
@@ -104,7 +109,7 @@ class TSudokuPuzzle(SudokuPuzzle):
             for j in range(9):
                 self.grid[i][j].updateEntry(puzzle[i][j])
                 self.grid[i][j].updatePosBlock(i,j)
-                self.grid[i][j].updateFixed()         
+                self.grid[i][j].updateFixed()
     def initSolve(self):
         for i in range(9):
             temp = set(range(1, 10))
@@ -151,19 +156,4 @@ class TSudokuPuzzle(SudokuPuzzle):
     def swap(self, sample1, sample2):
         self.grid[sample1[0]][sample1[1]].updatePosBlock(sample2[0],sample2[1])
         self.grid[sample2[0]][sample2[1]].updatePosBlock(sample1[0],sample1[1])
-        self.grid[sample1[0]][sample1[1]].trialEntry, self.grid[sample2[0]][sample2[1]].trialEntry=self.grid[sample2[0]][sample2[1]].trialEntry, self.grid[sample1[0]][sample1[1]].trialEntry 
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        self.grid[sample1[0]][sample1[1]].trialEntry, self.grid[sample2[0]][sample2[1]].trialEntry=self.grid[sample2[0]][sample2[1]].trialEntry, self.grid[sample1[0]][sample1[1]].trialEntry

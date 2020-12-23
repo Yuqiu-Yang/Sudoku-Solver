@@ -1,0 +1,104 @@
+#: import sub re.sub
+# GridLayout:
+#     cols: 2
+#     CameraScreen:
+#         name: "camera_screen"
+#         id: camera_screen
+#     SudokuWidget:
+#         name: "sudoku_widget"
+#         id: sudoku_widget
+
+<SudokuSquare>:
+    text: ''
+    input_filter:
+        lambda substring, from_undo: sub('\D', '', substring) \
+        [:1 - len(self.text)]
+    multiline: 'False'
+    font_size: 45
+    write_tab: False
+
+<SudokuWidget>:
+    grid_widget: grid_widget
+    BoxLayout:
+        orientation: 'horizontal'
+        BoxLayout:
+            orientation: 'horizontal'
+            FileChooserListView:
+                id: file_chooser
+                dirselect: True
+                on_selection:
+                    root.selected_file(*args)
+                    root.display(file_chooser.selection)
+            BoxLayout:
+                orientation: 'vertical'
+                Image:
+                    id: image
+                    source: ""
+                Camera:
+                    id: camera
+                    resolution: (720, 720)
+                    play: False
+                ToggleButton:
+                    text: 'Play'
+                    on_press: camera.play = not camera.play
+                    size_hint_y: None
+                    height: '48dp'
+                Button:
+                    text: 'Capture Puzzle'
+                    size_hint_y: None
+                    height: '48dp'
+                    on_press:
+                        root.capture()
+
+        BoxLayout:
+            canvas:
+                Color:
+                    rgb: 0.1, 0.1, 0.2
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            BoxLayout:
+                padding: (10,10,10,10)
+                height: root.height
+                width: root.width / 2
+                spacing: 10
+                SudokuGrid:
+                    id: grid_widget
+                    width: root.width * 0.7 / 2
+                    size_hint_x: None
+                GridLayout:
+                    cols: 1
+                    spacing: root.height/5
+                    Button:
+                        background_normal: 'button.png'
+                        background_down: 'button_down.png'
+                        border: 30,30,30,30
+                        size_hint_y: None
+                        height: root.height/10
+                        width: root.width * 0.3 / 2
+                        font_size: '40sp'
+                        text: 'Extract'
+                        on_press: root.extract()
+
+
+                    Button:
+                        background_normal: 'button.png'
+                        background_down: 'button_down.png'
+                        border: 30,30,30,30
+                        size_hint_y: None
+                        height: root.height/10
+                        width: root.width * 0.3 / 2
+                        font_size: '40sp'
+                        text: 'MCMC'
+                        on_press: root.solveMCMC()
+
+                    Button:
+                        background_normal: 'button.png'
+                        background_down: 'button_down.png'
+                        border: 30,30,30,30
+                        size_hint_y: None
+                        height: root.height/10
+                        width: root.width * 0.3 / 2
+                        font_size: '40sp'
+                        text: 'Solve'
+                        on_press: root.solve()
